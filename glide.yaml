@@ -1,0 +1,8 @@
+package: websocket-redis
+import:
+- package: github.com/garyburd/redigo
+  version: ^1.6.0
+  subpackages:
+  - redis
+- package: github.com/gorilla/websocket
+  version: ^1.4.0

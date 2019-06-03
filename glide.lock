@@ -1,0 +1,11 @@
+hash: 8e85c7d174898876e074f477d2baddd68b5e01fa7de12ae96ba76b4699e86008
+updated: 2019-06-03T22:38:02.048144+08:00
+imports:
+- name: github.com/garyburd/redigo
+  version: a69d19351219b6dd56f274f96d85a7014a2ec34e
+  subpackages:
+  - internal
+  - redis
+- name: github.com/gorilla/websocket
+  version: 66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d
+testImports: []
