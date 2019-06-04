@@ -1,0 +1,12 @@
+[Unit]
+Description=A tiny service that redirects Redis pub/sub messages to websockets
+After=network.target redis.service
+
+[Service]
+WorkingDirectory=/opt/charon
+Environment="PATH=/opt/charon:$PATH"
+ExecStart=/opt/charon/charon
+ExecStop=/bin/kill -s QUIT $MAINPID
+
+[Install]
+WantedBy=multi-user.target

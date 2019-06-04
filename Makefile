@@ -1,12 +1,12 @@
 SHELL := /bin/bash
 GO := GO15VENDOREXPERIMENT=1 go
 OUTPUT_PATH := bin/
-INSTALL_PATH := /usr/local/bin
+INSTALL_PATH := /opt/charon
 SERVICE_PATH := /etc/systemd/system
 SERVICE_NAME := charon.service
 NAME := charon
 OS := $(shell uname)
-MAIN_GO := cmd/...
+MAIN_GO := ./cmd/charon
 ROOT_PACKAGE := $(GIT_PROVIDER)/$(ORG)/$(NAME)
 GO_VERSION := $(shell $(GO) version | sed -e 's/^[^0-9.]*\([0-9.]*\).*/\1/')
 PACKAGE_DIRS := $(shell $(GO) list ./... | grep -v /vendor/)
@@ -21,7 +21,7 @@ all: build
 check: fmt build test
 
 build:
-	CGO_ENABLED=$(CGO_ENABLED) $(GO) build -ldflags $(BUILDFLAGS) -o ${OUTPUT_PATH}${NAME} ./cmd/charon
+	CGO_ENABLED=$(CGO_ENABLED) $(GO) build -ldflags $(BUILDFLAGS) -o ${OUTPUT_PATH}${NAME} $(MAIN_GO)
 	
 	cp .env ${OUTPUT_PATH}
 
@@ -33,6 +33,8 @@ full: $(PKGS)
 ifeq ($(OS), Linux)
 install:
 	glide install
+	mkdir -p ${INSTALL_PATH}
+	cp .env ${INSTALL_PATH}
 	GOBIN=${INSTALL_PATH} $(GO) install -ldflags $(BUILDFLAGS) $(MAIN_GO)
 	cp ${SERVICE_NAME} ${SERVICE_PATH}
 	systemctl daemon-reload
