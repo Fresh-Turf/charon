@@ -31,14 +31,14 @@ test:
 full: $(PKGS)
 
 ifeq ($(OS), Linux)
+install: glide install
+install: build
 install:
-	glide install
-	mkdir -p ${INSTALL_PATH}
-	cp .env ${INSTALL_PATH}
-	CGO_ENABLED=$(CGO_ENABLED) $(GO) install -ldflags $(BUILDFLAGS) $(MAIN_GO)
-	cp ${SERVICE_NAME} ${SERVICE_PATH}
-	systemctl daemon-reload
-	systemctl enable ${SERVICE_NAME}
+	sudo mkdir -p ${INSTALL_PATH}
+	sudo cp ${OUTPUT_PATH}/* ${INSTALL_PATH}
+	sudo cp ${SERVICE_NAME} ${SERVICE_PATH}
+	sudo systemctl daemon-reload
+	sudo systemctl enable ${SERVICE_NAME}
 
 uninstall: 
 	systemctl stop ${SERVICE_NAME}
