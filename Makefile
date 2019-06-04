@@ -35,7 +35,7 @@ install:
 	glide install
 	mkdir -p ${INSTALL_PATH}
 	cp .env ${INSTALL_PATH}
-	GOBIN=${INSTALL_PATH} $(GO) install -ldflags $(BUILDFLAGS) $(MAIN_GO)
+	CGO_ENABLED=$(CGO_ENABLED) $(GO) install -ldflags $(BUILDFLAGS) $(MAIN_GO)
 	cp ${SERVICE_NAME} ${SERVICE_PATH}
 	systemctl daemon-reload
 	systemctl enable ${SERVICE_NAME}
