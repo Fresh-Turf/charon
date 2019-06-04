@@ -22,8 +22,10 @@ var (
 			return nil, err
 		}
 		if _, err := c.Do("AUTH", password); err != nil {
-			c.Close()
-			return nil, err
+			if err.Error() != "ERR Client sent AUTH, but no password is set" { // Allow empty password
+				c.Close()
+				return nil, err
+			}
 		}
 		return c, nil
 	}
