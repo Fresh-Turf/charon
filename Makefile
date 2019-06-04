@@ -36,7 +36,7 @@ install:
 install: build
 install:
 	sudo mkdir -p ${INSTALL_PATH}
-	sudo cp ${OUTPUT_PATH}* ${INSTALL_PATH}
+	sudo cp ${OUTPUT_PATH}*.* ${INSTALL_PATH}
 	sudo cp ${SERVICE_NAME} ${SERVICE_PATH}
 	sudo systemctl daemon-reload
 	sudo systemctl enable ${SERVICE_NAME}
