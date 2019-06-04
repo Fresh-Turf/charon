@@ -1,8 +1,8 @@
 SHELL := /bin/bash
 GO := GO15VENDOREXPERIMENT=1 go
 OUTPUT_PATH := bin/
-INSTALL_PATH := /opt/charon
-SERVICE_PATH := /etc/systemd/system
+INSTALL_PATH := /opt/charon/
+SERVICE_PATH := /etc/systemd/system/
 SERVICE_NAME := charon.service
 NAME := charon
 OS := $(shell uname)
@@ -31,12 +31,10 @@ test:
 full: $(PKGS)
 
 ifeq ($(OS), Linux)
-install: 
-	glide install
 install: build
 install:
 	sudo mkdir -p ${INSTALL_PATH}
-	sudo cp -r ${OUTPUT_PATH} ${INSTALL_PATH}
+	sudo cp -r ${OUTPUT_PATH}. ${INSTALL_PATH}
 	sudo cp ${SERVICE_NAME} ${SERVICE_PATH}
 	sudo systemctl daemon-reload
 	sudo systemctl enable ${SERVICE_NAME}
