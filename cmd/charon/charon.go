@@ -1,23 +1,27 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 
 	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/websocket"
+
+	charonutils "charon/internal/utils"
 )
 
 var (
 	cache     *Cache
 	pubSub    *redis.PubSubConn
-	redisConn = func() (redis.Conn, error) {
-		c, err := redis.Dial("tcp", ":6379")
+	redisConn = func(host string, port string, password string) (redis.Conn, error) {
+		c, err := redis.Dial("tcp", fmt.Sprintf("%s:%s", host, port))
 		if err != nil {
 			return nil, err
 		}
-		if _, err := c.Do("AUTH", "password"); err != nil {
+		if _, err := c.Do("AUTH", password); err != nil {
 			c.Close()
 			return nil, err
 		}
@@ -52,7 +56,7 @@ func (c *Cache) newUser(conn *websocket.Conn, id string) *User {
 		conn: conn,
 	}
 
-	if err := pubSub.Subscribe("scan"); err != nil {
+	if err := pubSub.Subscribe(os.Getenv("REDIS_CHANNEL")); err != nil {
 		panic(err)
 	}
 	c.Lock()
@@ -62,10 +66,13 @@ func (c *Cache) newUser(conn *websocket.Conn, id string) *User {
 	return u
 }
 
-var serverAddress = ":8081"
+var serverAddress string
 
 func main() {
-	redisConn, err := redisConn()
+	charonutils.LoadEnv()
+
+	serverAddress = fmt.Sprintf(":%s", os.Getenv("SERVICE_PORT"))
+	redisConn, err := redisConn(os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT"), os.Getenv("REDIS_PASSWORD"))
 	if err != nil {
 		panic(err)
 	}
@@ -89,7 +96,7 @@ var upgrader = websocket.Upgrader{
 }
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	// enableCors(&w)
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -106,12 +113,6 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 			log.Printf("error on ws. message %s\n", err)
 			cache.closeAndDelete(usr)
 			return
-		}
-
-		if c, err := redisConn(); err != nil {
-			log.Printf("error on redis conn. %s\n", err)
-		} else {
-			c.Do("PUBLISH", m.DeliveryID, string(m.Content))
 		}
 	}
 }
@@ -159,6 +160,4 @@ func (c *Cache) findAndDeliver(userID string, content string) {
 		}
 	}
 	return
-
-	log.Printf("user %s not found at our store\n", userID)
 }

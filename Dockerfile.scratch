@@ -1,6 +1,0 @@
-FROM scratch
-MAINTAINER Connor Yates <connor.t.yates@gmail.com>
-ADD server server
-ENV PORT 80
-EXPOSE 80
-ENTRYPOINT ["/server"]

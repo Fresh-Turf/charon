@@ -1,28 +1,25 @@
-# websocket-redis
+# Charon
 
-Requires a running Redis instance.
+![Charon](charon.jpg)
 
-Microservice for handling Redis pub/sub events and websocket connections.
+A tiny WebSocket server that broadcasts messages from Redis pub/sub channel.
 
-Front-end client should make a websocket connection like so:
+# You may ask why
 
-```javascript
-var socket = new WebSocket("ws://127.0.0.1:8080/ws?id=123456");
+It's built specifically to address the inability (or unnecessary difficulty) of a Python Flask app (swh-cv) to handle both multithreading and websockets simultaneously while running on Gunicorn application server. Since the said app is already utilising Redis pub/sub to communicate with Sentinel, it seemed reasonable to use another channel on the same Redis instance to broadcast progress updates. Websockets are used to push these updates to the front end.
 
-socket.onmessage = function(event) {
-    console.log(event);
-};
-```
+# Install
 
-Which creates and subscribes to a Redis channel (with an ID of 123456) and sends all events back to the client.
+1. If doing for the first time: `glide install` and `cp .env.example .env`, then edit `.env` as needed.
+2. `make && sudo make install`
+3. `sudo service charon status`
 
-# Running
+Note that make install will only work on Linux
 
-As a Docker container (Linux only):
+# Uninstall
 
-```bash
-$ CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w' .
-$ docker build -t yourname/server .
-```
+`sudo make uninstall`
 
-Or just: ```go run server.go```
+# Credits
+
+Forked from https://github.com/connoryates/websocket-redis
