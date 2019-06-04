@@ -1,4 +1,4 @@
-package: websocket-redis
+package: charon
 import:
 - package: github.com/garyburd/redigo
   version: ^1.6.0
