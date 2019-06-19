@@ -1,6 +1,12 @@
-hash: f273225330c0f95ec6e1307a34234e2f550fe1a3842cb6a58b9a2c8ebfb33c0f
-updated: 2019-06-04T13:42:38.938081+08:00
+hash: da84348c03e764594f1b057ee7a267c929766a74ff30d59f50e59ec79066119f
+updated: 2019-06-19T11:48:08.373168+08:00
 imports:
+- name: github.com/alecthomas/template
+  version: a0175ee3bccc567396460bf5acd36800cb10c49c
+  subpackages:
+  - parse
+- name: github.com/alecthomas/units
+  version: 2efee857e7cfd4f3d0138cc3cbb1b4966962b93a
 - name: github.com/garyburd/redigo
   version: a69d19351219b6dd56f274f96d85a7014a2ec34e
   subpackages:
@@ -10,4 +16,6 @@ imports:
   version: 66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d
 - name: github.com/joho/godotenv
   version: 23d116af351c84513e1946b527c88823e476be13
+- name: gopkg.in/alecthomas/kingpin.v2
+  version: 947dcec5ba9c011838740e680966fd7087a71d0d
 testImports: []

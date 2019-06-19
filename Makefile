@@ -12,7 +12,8 @@ GO_VERSION := $(shell $(GO) version | sed -e 's/^[^0-9.]*\([0-9.]*\).*/\1/')
 PACKAGE_DIRS := $(shell $(GO) list ./... | grep -v /vendor/)
 PKGS := $(shell go list ./... | grep -v /vendor | grep -v generated)
 PKGS := $(subst  :,_,$(PKGS))
-BUILDFLAGS := '-s -w'
+VERSION := $(shell cat VERSION)
+BUILDFLAGS := "-s -w -X main.appVersion=$(VERSION)"
 CGO_ENABLED = 0
 VENDOR_DIR=$(PWD)"/vendor"
 

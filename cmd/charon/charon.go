@@ -9,6 +9,7 @@ import (
 
 	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/websocket"
+	kingpin "gopkg.in/alecthomas/kingpin.v2"
 
 	charonutils "charon/internal/utils"
 )
@@ -29,6 +30,10 @@ var (
 		}
 		return c, nil
 	}
+
+	versionFlag = kingpin.Flag("version", "Output version and exit.").Short('v').Bool()
+	appName     = "charon"
+	appVersion  = "undefined"
 )
 
 func init() {
@@ -71,6 +76,15 @@ func (c *Cache) newUser(conn *websocket.Conn, id string) *User {
 var serverAddress string
 
 func main() {
+	// Parse the flags
+	kingpin.Parse()
+
+	log.Printf("%s %s", appName, appVersion)
+
+	if *versionFlag {
+		os.Exit(0)
+	}
+
 	charonutils.LoadEnv()
 
 	serverAddress = fmt.Sprintf(":%s", os.Getenv("SERVICE_PORT"))
